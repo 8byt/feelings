@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css?family=Nunito:300,400');
 
 body {
     margin: 0;
@@ -12,7 +12,7 @@ body {
     flex-direction: column;
 
     .header {
-        font-style: black;
+        
     }
 
     .footer {
@@ -20,5 +20,6 @@ body {
         bottom: 0;
         width: 100%;
         text-align: center;
+        font-weight: lighter;
     }
 }
