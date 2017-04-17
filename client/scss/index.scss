@@ -1,9 +1,24 @@
-html, body, #render-target {
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+body {
     margin: 0;
+    font-family: 'Nunito', sans-serif;
 }
 
 .app {
     height: 100vh;
     width: 100vw;
     display: flex;
+    flex-direction: column;
+
+    .header {
+        font-style: black;
+    }
+
+    .footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+    }
 }
