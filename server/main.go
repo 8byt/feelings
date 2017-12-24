@@ -23,10 +23,10 @@ type Env struct {
 }
 
 type User struct {
-	Id      int64  `json:"id"`
-	Email   string `json:"email"`
-	Name    string `json:"name"`
-	Friends []User `json:"friends"`
+	Id      int64   `json:"id"`
+	Email   string  `json:"email"`
+	Name    string  `json:"name"`
+	Friends []*User `json:"friends"`
 }
 
 type Feeling struct {
@@ -36,9 +36,9 @@ type Feeling struct {
 }
 
 type Post struct {
-	Id        int64  `json:"id"`
-	UserId    int64  `json:"userId"`
-	FeelingId int  `json:"feelingId"`
+	Id        int64   `json:"id"`
+	UserId    int64   `json:"userId"`
+	FeelingId int     `json:"feelingId"`
 	Children  []*Post `json:"children"`
 }
 
@@ -99,7 +99,7 @@ func (e *Env) HandleAddUser(c *gin.Context) {
 
 type AddPost struct {
 	UserId    int64 `json:"user_id" binding:"required"`
-	FeelingId int `json:"feeling_id" binding:"required"`
+	FeelingId int   `json:"feeling_id" binding:"required"`
 	ParentId  int64 `json:"parent_id"`
 }
 
@@ -129,12 +129,11 @@ func (e *Env) HandleAddPost(c *gin.Context) {
 	})
 }
 
-
 type DbPost struct {
-	PostId int64
-	UserId int64
+	PostId    int64
+	UserId    int64
 	FeelingId int
-	ParentId int64
+	ParentId  sql.NullInt64
 }
 
 //TODO(sam): there has got to be a better way of doing this
@@ -161,7 +160,7 @@ func (e *Env) GetPosts(rootParentId sql.NullInt64) ([]*Post, error) {
 
 	var idMap = make(map[int64]*Post)
 
-	AddPost := func (postParentId sql.NullInt64, post *Post) {
+	AddPost := func(postParentId sql.NullInt64, post *Post) {
 		idMap[post.Id] = post
 		if !postParentId.Valid {
 			posts = append(posts, post)
@@ -172,19 +171,16 @@ func (e *Env) GetPosts(rootParentId sql.NullInt64) ([]*Post, error) {
 	}
 
 	for rows.Next() {
-		var postId int64
-		var userId int64
-		var feelingId int
-		var maybeParentId sql.NullInt64
-		err = rows.Scan(&postId, &userId, &feelingId, &maybeParentId)
+		var dbPost DbPost
+		err = rows.Scan(&dbPost.PostId, &dbPost.UserId, &dbPost.FeelingId, &dbPost.ParentId)
 		if err != nil {
 			return []*Post{}, err
 		}
 
-		AddPost(maybeParentId, &Post{
-			Id:        postId,
-			UserId:    userId,
-			FeelingId: feelingId,
+		AddPost(dbPost.ParentId, &Post{
+			Id:        dbPost.PostId,
+			UserId:    dbPost.UserId,
+			FeelingId: dbPost.FeelingId,
 			Children:  []*Post{},
 		})
 	}
@@ -203,6 +199,99 @@ func (e *Env) HandleGetFeed(c *gin.Context) {
 	})
 }
 
+type DbUser struct {
+	UserId int64
+	Name   string
+}
+
+func (e *Env) GetUsers() ([]*User, error) {
+	rows, err := e.db.Query(
+		`SELECT user_id, "name" FROM "user"`,
+	)
+	if err != nil {
+		return []*User{}, err
+	}
+	defer rows.Close()
+
+	var users []*User
+
+	for rows.Next() {
+		var dbUser DbUser
+		err = rows.Scan(&dbUser.UserId, &dbUser.Name)
+		if err != nil {
+			return []*User{}, err
+		}
+		users = append(users, &User{
+			Id:      dbUser.UserId,
+			Email:   "",
+			Name:    dbUser.Name,
+			Friends: nil, // NOTE(danny): nil means specifically that this data has been redacted
+		})
+	}
+
+	return users, nil
+}
+
+func (e *Env) GetFriends(userId int64) []*User {
+	return []*User{}
+}
+
+type GetFriends struct {
+	UserId int64 `form:"user_id" binding:"required"`
+}
+
+func (e *Env) HandleGetFriends(c *gin.Context) {
+	var getFriends GetFriends
+	if err := c.ShouldBind(&getFriends); err != nil {
+		SendError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	friends, err := e.GetUsers()
+	if err != nil {
+		SendError(c, 500, err.Error())
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"friends": friends, // TODO(danny): use e.GetFriends(getFriends.UserId),
+	})
+}
+
+func (e *Env) GetFeelings() ([]*Feeling, error) {
+	rows, err := e.db.Query(
+		`SELECT feeling_id, "name", glyph FROM "feeling"`,
+	)
+	if err != nil {
+		return []*Feeling{}, err
+	}
+	defer rows.Close()
+
+	var feelings []*Feeling
+
+	for rows.Next() {
+		var feeling Feeling
+		err = rows.Scan(&feeling.Id, &feeling.Name, &feeling.Glyph)
+		if err != nil {
+			return []*Feeling{}, err
+		}
+		feelings = append(feelings, &feeling)
+	}
+
+	return feelings, nil
+}
+
+func (e *Env) HandleGetFeelings(c *gin.Context) {
+	feelings, err := e.GetFeelings()
+	if err != nil {
+		SendError(c, 500, err.Error())
+	}
+
+	c.JSON(200, gin.H{
+		"feelings": feelings,
+	})
+}
+
 func main() {
 	db := OpenDb()
 	defer db.Close()
@@ -211,7 +300,9 @@ func main() {
 	env := &Env{db: db}
 
 	r.GET("/api/feed", env.HandleGetFeed)
+	r.GET("/api/friends", env.HandleGetFriends)
 	r.POST("/api/user", env.HandleAddUser)
 	r.POST("/api/post", env.HandleAddPost)
+	r.GET("/api/feelings", env.HandleGetFeelings)
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
