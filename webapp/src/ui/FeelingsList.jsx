@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import { Popup, Accordion, Icon } from 'semantic-ui-react';
 
 import { getUserName } from '../data/users/selectors';
@@ -44,12 +45,15 @@ class FeelingsList extends Component {
 
   };
 
-  state = { activeIndex: -1 };
+  state = { activeIndex: [] };
 
   handleClick = (e, { index }) => {
     const { activeIndex } = this.state;
-    const newIndex = activeIndex === index ? -1 : index;
 
+    const newIndex = activeIndex.includes(index) ?
+      _.without(activeIndex, index)
+      : _.concat(activeIndex, index);
+    
     this.setState({ activeIndex: newIndex });
   }
 
@@ -57,12 +61,12 @@ class FeelingsList extends Component {
     const { feelings, isTopLevel } = this.props;
     const { activeIndex } = this.state;
     return (
-      <Accordion>
+      <Accordion fluid exclusive={false}>
         {feelings.map((props, index) => (
           <FeelingWrapper
             key={index}
             index={index}
-            active={activeIndex === index}
+            active={activeIndex.includes(index)}
             isTopLevel={isTopLevel}
             onClick={this.handleClick}
             {...props}
