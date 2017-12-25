@@ -16,7 +16,7 @@ const (
 )
 
 type Env struct {
-	db *sql.DB
+	Db *sql.DB
 }
 
 func OpenDbEnv() *Env {
@@ -34,9 +34,9 @@ func OpenDbEnv() *Env {
 	}
 
 	fmt.Println("Successfully connected!")
-	return &Env{db: db}
+	return &Env{Db: db}
 }
 
 func (e *Env) Close() {
-	e.db.Close()
+	e.Db.Close()
 }

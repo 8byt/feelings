@@ -4,17 +4,17 @@ import (
 	"database/sql"
 )
 
-type DbUser struct {
-	UserId int64
-	Name   string
+type MiniUser struct {
+	UserId int64  `json:"id"`
+	Name   string `json:"name"`
 }
 
 type User struct {
-	Id         int64   `json:"id"`
-	Email      string  `json:"email"`
-	Name       string  `json:"name"`
-	TimeJoined int64   `json:"timeJoined"`
-	Friends    []*User `json:"friends"`
+	Id         int64       `json:"id"`
+	Email      string      `json:"email"`
+	Name       string      `json:"name"`
+	TimeJoined int64       `json:"timeJoined"`
+	Friends    []*MiniUser `json:"friends"`
 }
 
 type Feeling struct {

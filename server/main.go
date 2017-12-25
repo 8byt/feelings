@@ -1,6 +1,7 @@
 package main
 
 import (
+	"feelings/server/api"
 	"feelings/server/database"
 	"fmt"
 	"github.com/appleboy/gin-jwt"
@@ -11,6 +12,7 @@ import (
 
 func main() {
 	env := database.OpenDbEnv()
+	apiEnv := api.GetApiEnv(env)
 	defer env.Close()
 
 	r := gin.New()
@@ -32,14 +34,21 @@ func main() {
 
 	r.POST("/login", auth.LoginHandler)
 
-	api := r.Group("/api")
-	api.Use(auth.MiddlewareFunc())
+	apiGroup := r.Group("/api")
+	apiGroup.Use(auth.MiddlewareFunc())
 	{
-		api.GET("/feed", env.HandleGetFeed)
-		api.GET("/friends", env.HandleGetFriends)
-		api.POST("/user", env.HandleAddUser)
-		api.POST("/post", env.HandleAddPost)
-		api.GET("/feelings", env.HandleGetFeelings)
+		apiGroup.GET("/feed", apiEnv.HandleGetFeed)
+
+		apiGroup.GET("/friends", apiEnv.HandleGetFriends)
+		apiGroup.GET("/friends/pending", apiEnv.HandleGetPendingFriends)
+		apiGroup.POST("/friends/add", apiEnv.HandleAddFriend)
+		apiGroup.POST("/friends/confirm", apiEnv.HandleConfirmFriend)
+
+		apiGroup.POST("/user", apiEnv.HandleAddUser)
+
+		apiGroup.POST("/post", apiEnv.HandleAddPost)
+
+		apiGroup.GET("/feelings", apiEnv.HandleGetFeelings)
 	}
 
 	r.Run() // listen and serve on 0.0.0.0:8080

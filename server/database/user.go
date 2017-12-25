@@ -1,97 +1,61 @@
 package database
 
 import (
-	"feelings/server/types"
-	"feelings/server/util"
-	"fmt"
-	"github.com/gin-gonic/gin"
-	"net/http"
-	"strings"
-
 	_ "database/sql"
+	"feelings/server/types"
 )
 
-func (e *Env) HandleAddUser(c *gin.Context) {
-	name := c.Query("name")
-	email := c.Query("email")
+func (e *Env) GetUserByEmail(userEmail string) (*types.User, error) {
+	var user types.User
+	err := e.Db.QueryRow(
+		`SELECT user_id, name, email FROM "user" WHERE "email" = $1`,
+		userEmail,
+	).Scan(&user.Id, &user.Name, &user.Email)
+	if err != nil {
+		return &types.User{}, err
+	}
 
-	if len(name) < 2 {
-		util.SendError(c, http.StatusBadRequest, "name not long enough")
-		return
+	return &user, nil
+}
+
+func (e *Env) CheckAuthentication(userEmail string) (int64, bool) {
+	user, err := e.GetUserByEmail(userEmail)
+	if err != nil {
+		return -1, false
 	}
-	if len(email) == 0 {
-		util.SendError(c, http.StatusBadRequest, "no email specified")
-		return
-	} else if len(strings.Split(email, "@")) != 2 {
-		util.SendError(c, http.StatusBadRequest, "email invalid")
-		return
-	}
+	return user.Id, true
+}
+
+func (e *Env) AddUser(name string, email string) (int64, error) {
 	var userId int64 = 0
-	err := e.db.QueryRow(
+	err := e.Db.QueryRow(
 		`INSERT INTO "user"("name", "email") VALUES ($1, $2) RETURNING "user_id"`,
 		name,
 		email,
 	).Scan(&userId)
-	if err != nil {
-		fmt.Println(err)
-		util.SendError(c, http.StatusInternalServerError, err.Error())
-		return
-	}
-	c.JSON(200, gin.H{
-		"user_id": userId,
-	})
+
+	return userId, err
 }
 
-func (e *Env) GetUsers() ([]*types.User, error) {
-	rows, err := e.db.Query(
+func (e *Env) GetUsers() ([]*types.MiniUser, error) {
+	rows, err := e.Db.Query(
 		`SELECT user_id, "name" FROM "user"`,
 	)
 	if err != nil {
-		return []*types.User{}, err
+		return []*types.MiniUser{}, err
 	}
 	defer rows.Close()
 
-	var users []*types.User
+	var users []*types.MiniUser
 
 	for rows.Next() {
-		var dbUser types.DbUser
-		err = rows.Scan(&dbUser.UserId, &dbUser.Name)
+		var miniUser types.MiniUser
+		err = rows.Scan(&miniUser.UserId, &miniUser.Name)
 		if err != nil {
-			return []*types.User{}, err
+			return []*types.MiniUser{}, err
 		}
-		users = append(users, &types.User{
-			Id:      dbUser.UserId,
-			Email:   "",
-			Name:    dbUser.Name,
-			Friends: nil, // NOTE(danny): nil means specifically that this data has been redacted
-		})
+		users = append(users, &miniUser)
 	}
 
 	return users, nil
-}
-
-func (e *Env) GetFriends(userId int64) []*types.User {
-	return []*types.User{}
-}
-
-type GetFriends struct {
-	UserId int64 `form:"user_id" binding:"required"`
-}
-
-func (e *Env) HandleGetFriends(c *gin.Context) {
-	var getFriends GetFriends
-	if err := c.ShouldBind(&getFriends); err != nil {
-		util.SendError(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	friends, err := e.GetUsers() // TODO(danny): use e.GetFriends(getFriends.UserId),
-	if err != nil {
-		util.SendError(c, 500, err.Error())
-		return
-	}
-
-	c.JSON(200, gin.H{
-		"friends": friends,
-	})
 }

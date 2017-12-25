@@ -3,41 +3,27 @@ package database
 import (
 	"database/sql"
 	"feelings/server/types"
-	"feelings/server/util"
-	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
-type AddPost struct {
-	UserId    int64 `json:"user_id" binding:"required"`
-	FeelingId int   `json:"feeling_id" binding:"required"`
-	ParentId  int64 `json:"parent_id"`
+type ReqAddPost struct {
+	UserId    int64 `json:"userId" binding:"required"`
+	FeelingId int   `json:"feelingId" binding:"required"`
+	ParentId  int64 `json:"parentId"`
 }
 
-func (e *Env) HandleAddPost(c *gin.Context) {
-	var addPost AddPost
-	if err := c.ShouldBind(&addPost); err != nil {
-		util.SendError(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
+func (e *Env) AddPost(req ReqAddPost) (int64, error) {
 	addPostSql := `INSERT INTO "post"("user_id", "feeling_id", "parent_id") VALUES ($1, $2, $3) RETURNING "post_id"`
 	var postId int64 = 0
 	var maybeParentId sql.NullInt64
 
 	// handle case where parent id isn't given
-	if addPost.ParentId > 0 {
+	if req.ParentId > 0 {
 		maybeParentId.Valid = true
-		maybeParentId.Int64 = addPost.ParentId
+		maybeParentId.Int64 = req.ParentId
 	}
-	err := e.db.QueryRow(addPostSql, addPost.UserId, addPost.FeelingId, maybeParentId).Scan(&postId)
-	if err != nil {
-		util.SendError(c, 500, err.Error())
-		return
-	}
-	c.JSON(200, gin.H{
-		"post_id": postId,
-	})
+	err := e.Db.QueryRow(addPostSql, req.UserId, req.FeelingId, maybeParentId).Scan(&postId)
+
+	return postId, err
 }
 
 func (e *Env) GetPosts(rootParentId sql.NullInt64) ([]*types.Post, error) {
@@ -50,7 +36,7 @@ func (e *Env) GetPosts(rootParentId sql.NullInt64) ([]*types.Post, error) {
 			FROM post p2, nodes s1 WHERE p2.parent_id = s1.post_id
 		)
 		SELECT * FROM nodes;`
-	rows, err := e.db.Query(
+	rows, err := e.Db.Query(
 		recursivePostSql,
 		rootParentId,
 	)
