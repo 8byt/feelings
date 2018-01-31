@@ -16,10 +16,11 @@ CREATE TABLE "user"
 
 CREATE TABLE friendship
 (
-  user_id_a bigint NOT NULL REFERENCES "user" (user_id),
-  user_id_b bigint NOT NULL REFERENCES "user" (user_id),
+  src_user_id bigint NOT NULL REFERENCES "user" (user_id),
+  dest_user_id bigint NOT NULL REFERENCES "user" (user_id),
+  accepted boolean NOT NULL,
   CONSTRAINT friendship_pk
-    PRIMARY KEY (user_id_a, user_id_b)
+    PRIMARY KEY (src_user_id, dest_user_id)
 );
 
 CREATE TABLE feeling
