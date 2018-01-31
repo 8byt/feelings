@@ -3,6 +3,8 @@ package database
 import (
 	_ "database/sql"
 	"feelings/server/types"
+	"log"
+	"github.com/lib/pq"
 )
 
 func (e *Env) GetUserByEmail(userEmail string) (*types.User, error) {
@@ -52,6 +54,32 @@ func (e *Env) GetUsers() ([]*types.MiniUser, error) {
 		var miniUser types.MiniUser
 		err = rows.Scan(&miniUser.UserId, &miniUser.Name)
 		if err != nil {
+			return []*types.MiniUser{}, err
+		}
+		users = append(users, &miniUser)
+	}
+
+	return users, nil
+}
+
+func (e *Env) GetUsersById(userIds pq.Int64Array) ([]*types.MiniUser, error) {
+	rows, err := e.Db.Query(
+		`SELECT "user_id", "name" FROM "user" WHERE "user_id" = ANY($1)`,
+		userIds,
+	)
+	if err != nil {
+		log.Println(err)
+		return []*types.MiniUser{}, err
+	}
+	defer rows.Close()
+
+	var users []*types.MiniUser
+
+	for rows.Next() {
+		var miniUser types.MiniUser
+		err = rows.Scan(&miniUser.UserId, &miniUser.Name)
+		if err != nil {
+			log.Println(err)
 			return []*types.MiniUser{}, err
 		}
 		users = append(users, &miniUser)
