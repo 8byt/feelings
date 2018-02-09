@@ -60,9 +60,28 @@ const data = {
           ]
         },
         {
-          id: 4,
+          id: 3,
           userId: 1,
           feelingId: 3,
+          children: [
+            {
+              id: 5,
+              userId: 1,
+              feelingId: 2,
+              children: []
+            },
+            {
+              id: 6,
+              userId: 2,
+              feelingId: 2,
+              children: []
+            }
+          ]
+        },
+        {
+          id: 4,
+          userId: 1,
+          feelingId: 1,
           children: [
             {
               id: 7,
@@ -73,7 +92,7 @@ const data = {
             {
               id: 8,
               userId: 2,
-              feelingId: 1,
+              feelingId: 3,
               children: []
             }
           ]
