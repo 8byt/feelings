@@ -5,7 +5,6 @@ import (
 	"feelings/server/util"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"log"
 )
 
 func (e *ApiEnv) HandleGetFeed(c *gin.Context) {

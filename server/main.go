@@ -33,6 +33,7 @@ func main() {
 	}
 
 	r.POST("/login", auth.LoginHandler)
+	r.POST("/user", apiEnv.HandleAddUser)
 
 	apiGroup := r.Group("/api")
 	apiGroup.Use(auth.MiddlewareFunc())
@@ -43,8 +44,6 @@ func main() {
 		apiGroup.GET("/friends/pending", apiEnv.HandleGetPendingFriends)
 		apiGroup.POST("/friends/add", apiEnv.HandleAddFriend)
 		apiGroup.POST("/friends/confirm", apiEnv.HandleConfirmFriend)
-
-		apiGroup.POST("/user", apiEnv.HandleAddUser)
 
 		apiGroup.POST("/post", apiEnv.HandleAddPost)
 

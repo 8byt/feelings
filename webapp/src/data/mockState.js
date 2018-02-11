@@ -87,7 +87,14 @@ const data = {
               id: 7,
               userId: 1,
               feelingId: 1,
-              children: []
+              children: [
+                {
+                  id: 11,
+                  userId: 1,
+                  feelingId: 6,
+                  children: []
+                }
+              ]
             },
             {
               id: 8,
@@ -96,6 +103,12 @@ const data = {
               children: []
             }
           ]
+        },
+        {
+          id: 13,
+          userId: 2,
+          feelingId: 5,
+          children: []
         }
       ]
     },
@@ -124,6 +137,6 @@ const data = {
 
 export default Map({
   users: mapify(fromJS(data.users)),
-  feelings: mapify(fromJS(data.feelings)),
+  // feelings: mapify(fromJS(data.feelings)),
   posts: fromJS(data.posts)
 });

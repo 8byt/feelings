@@ -1,4 +1,5 @@
 import { Map, List } from 'immutable';
+import _ from 'lodash';
 import { createSelector } from 'reselect';
 
 import { getEmoji } from '../feelings/selectors';
@@ -21,12 +22,6 @@ export const isFirstOfType = (state, path) => {
   return firstIndex === path[path.length - 1];
 };
 
-export const getNumFeelingsOfType = (state, path) => {
-  const feelingId = getPostFeeling(state, path);
-  const siblings = getReactions(state, path.slice(0, -1));
-  return siblings.filter(post => post.get('feelingId') === feelingId).size;
-};
-
 export const getPoster = (state, path) => getPost(state, path).get('userId');
 
 export const getPostFeeling = (state, path) => getPost(state, path).get('feelingId');
@@ -34,3 +29,22 @@ export const getPostFeeling = (state, path) => getPost(state, path).get('feeling
 export const getPosterName = (state, path) => getUserName(state, getPoster(state, path));
 
 export const getPostEmoji = (state, path) => getEmoji(state, getPostFeeling(state, path));
+
+export const shouldShowFeeling = (state, path, expandedFeelings) => {
+  const firstOfType = isFirstOfType(state, path);
+  const expanded = _.includes(expandedFeelings, getPostFeeling(state, path));
+  return firstOfType || expanded;
+};
+
+export const getNumFeelingsOfType = (state, path) => {
+  const feelingId = getPostFeeling(state, path);
+  const siblings = getReactions(state, path.slice(0, -1));
+  return siblings.filter(post => post.get('feelingId') === feelingId).size;
+};
+
+export const shouldShowDuplicateCount = (state, path, expandedFeelings) => {
+  const firstOfType = isFirstOfType(state, path);
+  const expanded = _.includes(expandedFeelings, getPostFeeling(state, path));
+  const numOfType = getNumFeelingsOfType(state, path);
+  return firstOfType && numOfType > 1 && !expanded;
+};

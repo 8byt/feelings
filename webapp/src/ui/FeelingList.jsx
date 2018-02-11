@@ -7,10 +7,12 @@ import { Popup, Accordion, Icon } from 'semantic-ui-react';
 import AddReaction from './AddReaction';
 
 import {
+  getPostFeeling,
   getPostEmoji,
   getPosterName,
   getNumReactions,
-  isFirstOfType,
+  shouldShowFeeling,
+  shouldShowDuplicateCount,
   getNumFeelingsOfType,
 } from '../data/posts/selectors';
 
@@ -18,23 +20,30 @@ import { shouldShowReactions } from '../data/expanded/selectors';
 import { actions as expandedActions } from '../data/expanded/actions';
 
 function Feeling({
+  feelingId,
   emoji,
   userName,
   path,
-  firstOfType,
+  showFeeling,
+  showCount,
   numOfType,
   showReactions,
-  toggleReactions
+  toggleReactions,
+  expandFeeling,
+  collapseFeeling,
 }) {
-  const showBadge = numOfType > 1;
   return (
-    <div className={`feeling${!firstOfType ? ' hidden' : ''}`}>
+    <div
+      className={`feeling${!showFeeling ? ' hidden' : ''}`}
+      onMouseEnter={numOfType > 1 && (() => expandFeeling(feelingId))}
+      onMouseLeave={numOfType > 1 && (() => collapseFeeling(feelingId))}
+    >
       <div
-        className={`feeling-content${showBadge ? ' wide' : ''}`}
+        className={`feeling-content${showCount ? ' wide' : ''}`}
         onClick={toggleReactions}
       >
         {emoji}
-        {showBadge && <div className='feeling-count'>{numOfType}</div>}
+        {showCount && <div className='feeling-count'>{numOfType}</div>}
       </div>
       {/* userName */}
       {showReactions && <FeelingListWrapper path={path} />}
@@ -48,10 +57,12 @@ Feeling.propTypes = {
 
 const { toggleReactions } = expandedActions;
 
-const mapStateToProps = (state, { path }) => ({
+const mapStateToProps = (state, { path, expandedFeelings }) => ({
+  feelingId: getPostFeeling(state, path),
   emoji: getPostEmoji(state, path),
   userName: getPosterName(state, path),
-  firstOfType: isFirstOfType(state, path),
+  showFeeling: shouldShowFeeling(state, path, expandedFeelings),
+  showCount: shouldShowDuplicateCount(state, path, expandedFeelings),
   numOfType: getNumFeelingsOfType(state, path),
   showReactions: shouldShowReactions(state, path),
 });
@@ -66,19 +77,42 @@ const FeelingWrapper = connect(
 )(Feeling);
 
 
-const FeelingList = ({ path, numFeelings, topLevel }) => {
-  if (!numFeelings) return null;
+class FeelingList extends Component {
+  state = { expandedFeelings: [] }
 
-  return (
-    <div className={`feeling-list${topLevel ? ' top-level' : ''}`}>
-      {_.range(numFeelings).map(index => (
-        <FeelingWrapper key={index} path={_.concat(path, index)} />
-      ))}
-      <div className='feeling' style={{ marginLeft: 'auto' }}>
-        <AddReaction path={path} />
+  handleExpandFeeling = feelingId => {
+    this.setState({
+      expandedFeelings: _.concat(this.state.expandedFeelings, feelingId)
+    });
+  }
+
+  handleCollapseFeeling = feelingId => {
+    this.setState({
+      expandedFeelings: _.without(this.state.expandedFeelings, feelingId)
+    });
+  }
+
+  render() {
+    const { path, numFeelings, topLevel } = this.props;
+    if (!numFeelings) return null;
+
+    return (
+      <div className={`feeling-list${topLevel ? ' top-level' : ''}`}>
+        {_.range(numFeelings).map(index => (
+          <FeelingWrapper
+            key={index}
+            path={_.concat(path, index)}
+            expandedFeelings={this.state.expandedFeelings}
+            expandFeeling={this.handleExpandFeeling}
+            collapseFeeling={this.handleCollapseFeeling}
+          />
+        ))}
+        <div className='feeling' style={{ marginLeft: 'auto' }}>
+          <AddReaction path={path} />
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 const FeelingListWrapper = connect(
