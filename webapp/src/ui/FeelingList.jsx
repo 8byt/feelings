@@ -4,7 +4,11 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Popup, Accordion, Icon } from 'semantic-ui-react';
 
+import toJS from '../common/utils/toJS';
+
 import AddReaction from './AddReaction';
+
+import { getEmoji } from '../data/feelings/selectors';
 
 import {
   getPostFeeling,
@@ -14,6 +18,8 @@ import {
   shouldShowFeeling,
   shouldShowDuplicateCount,
   getNumFeelingsOfType,
+  getChildrenTypes,
+  getChildrenOfType,
 } from '../data/posts/selectors';
 
 import { shouldShowReactions } from '../data/expanded/selectors';
@@ -45,6 +51,7 @@ function Feeling({
         {emoji}
         {showCount && <div className='feeling-count'>{numOfType}</div>}
       </div>
+      <div className='badge'>⋯</div>
       {/* userName */}
       {showReactions && <FeelingListWrapper path={path} />}
     </div>
@@ -77,6 +84,16 @@ const FeelingWrapper = connect(
 )(Feeling);
 
 
+const FeelingGroup = ({ emoji }) => (<div>{emoji}</div>);
+
+const FeelingGroupWrapper = connect(
+  (state, { feelingId, path }) => ({
+    emoji: getEmoji(state, feelingId),
+    posts: getChildrenOfType(state, path, feelingId)
+  })
+)(toJS(FeelingGroup));
+
+
 class FeelingList extends Component {
   state = { expandedFeelings: [] }
 
@@ -93,18 +110,15 @@ class FeelingList extends Component {
   }
 
   render() {
-    const { path, numFeelings, topLevel } = this.props;
-    if (!numFeelings) return null;
+    const { path, childrenTypes } = this.props;
 
     return (
-      <div className={`feeling-list${topLevel ? ' top-level' : ''}`}>
-        {_.range(numFeelings).map(index => (
-          <FeelingWrapper
-            key={index}
-            path={_.concat(path, index)}
-            expandedFeelings={this.state.expandedFeelings}
-            expandFeeling={this.handleExpandFeeling}
-            collapseFeeling={this.handleCollapseFeeling}
+      <div className='feeling-list'>
+        {childrenTypes.map(feelingId => (
+          <FeelingGroupWrapper
+            key={feelingId}
+            feelingId={feelingId}
+            path={path}
           />
         ))}
         <div className='feeling' style={{ marginLeft: 'auto' }}>
@@ -116,7 +130,9 @@ class FeelingList extends Component {
 }
 
 const FeelingListWrapper = connect(
-  (state, { path }) => ({ numFeelings: getNumReactions(state, path) }),
-)(FeelingList);
+  (state, { path }) => ({
+    childrenTypes: getChildrenTypes(state, path)
+  }),
+)(toJS(FeelingList));
 
 export default FeelingListWrapper;

@@ -137,6 +137,6 @@ const data = {
 
 export default Map({
   users: mapify(fromJS(data.users)),
-  // feelings: mapify(fromJS(data.feelings)),
+  feelings: mapify(fromJS(data.feelings)),
   posts: fromJS(data.posts)
 });

@@ -17,10 +17,9 @@ export const actions = {
   }),
 
   fetchFeelings: () => async dispatch => {
-    const { path, method } = api.GET_FEELINGS;
     dispatch(actions.requestFeelings());
     try {
-      const json = await sendRequest(path, method);
+      const json = await sendRequest(api.GET_FEELINGS);
       dispatch(actions.loadFeelings(json));
     } catch (e) {
       dispatch(actions.loadFeelings(e, true));

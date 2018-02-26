@@ -33,3 +33,17 @@ func (e *ApiEnv) HandleAddUser(c *gin.Context) {
 		"user_id": userId,
 	})
 }
+
+func (e *ApiEnv) HandleGetCurrentUser(c *gin.Context) {
+	userId := util.GetUserId(c)
+	user, err := e.DbEnv.GetUserById(userId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "No user found.",
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"currentUser": user,
+		})
+	}
+}

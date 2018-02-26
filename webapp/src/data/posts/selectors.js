@@ -24,6 +24,8 @@ export const isFirstOfType = (state, path) => {
 
 export const getPoster = (state, path) => getPost(state, path).get('userId');
 
+export const getPostId = (state, path) => getPost(state, path).get('id');
+
 export const getPostFeeling = (state, path) => getPost(state, path).get('feelingId');
 
 export const getPosterName = (state, path) => getUserName(state, getPoster(state, path));
@@ -40,6 +42,21 @@ export const getNumFeelingsOfType = (state, path) => {
   const feelingId = getPostFeeling(state, path);
   const siblings = getReactions(state, path.slice(0, -1));
   return siblings.filter(post => post.get('feelingId') === feelingId).size;
+};
+
+export const getChildrenTypes = (state, path) => {
+  return getReactions(state, path)
+    .map(post => post.get('feelingId'))
+    .toSet()
+    .toList()
+    .sort();
+}
+
+export const getChildrenOfType = (state, path, feelingId) => {
+  return getReactions(state, path)
+    .map((post, index) => post.set('index', index))
+    .filter(post => post.get('feelingId') === feelingId)
+    .map(post => post.get('index'));
 };
 
 export const shouldShowDuplicateCount = (state, path, expandedFeelings) => {

@@ -9,7 +9,6 @@ import mockState from './data/mockState';
 export default function configureStore(history) {
   return createStore(
     rootReducer,
-    mockState,
     composeWithDevTools(applyMiddleware(
       thunkMiddleware,
       routerMiddleware(history),

@@ -2,8 +2,9 @@ const BASE_URL = 'http://localhost:3000'
 
 const endpoints = {
   LOGIN: ['/login', 'POST'],
+  GET_CURRENT_USER: ['/api/current-user', 'GET'],
   GET_FEELINGS: ['/api/feelings', 'GET'],
-  GET_FEED: ['/api/feed', 'GET'],
+  GET_POSTS: ['/api/feed', 'GET'],
   GET_FRIENDS: ['/api/friends', 'POST'],
   ADD_POST: ['/api/post', 'POST'],
 };
@@ -13,13 +14,7 @@ export default Object.entries(endpoints).reduce((all, [name, [path, method]]) =>
   [name]: { path: `${BASE_URL}${path}`, method },
 }), {});
 
-export async function sendRequest(path, method, data, auth = true, headers = {}) {
-  const something = await new Promise((resolve, reject) => {
-    setTimeout(function(){
-      resolve("Success!"); // Yay! Everything went well!
-    }, 250);
-  });
-
+export async function sendRequest({ path, method }, data, auth = true, headers = {}) {
   const request = new Request(path, {
     method,
     headers: new Headers({

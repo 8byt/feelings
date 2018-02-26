@@ -4,15 +4,16 @@ import { connect } from 'react-redux';
 import toJS from '../common/utils/toJS';
 
 import { getFeelings } from '../data/feelings/selectors';
+import { actions } from '../data/posts/actions';
 
-const ReactionOption = ({ id, glyph }) => (
-  <div className='reaction-option'>{glyph}</div>
+const ReactionOption = ({ id, glyph, postReaction }) => (
+  <div className='reaction-option' onClick={postReaction}>{glyph}</div>
 );
 
 const ReactionOptionWrapper = connect(
   () => ({}),
-  (dispatch, { id, path }) => ({
-    postReaction: () => dispatch()
+  (dispatch, { path, id }) => ({
+    postReaction: () => dispatch(actions.submitPost(path, id)),
   })
 )(ReactionOption);
 
@@ -38,7 +39,7 @@ class AddReaction extends Component {
         ＋
         <div className={`reaction-options${!this.state.showEmojis ? '' : ' visible'}`}>
           {feelings.map((feeling, idx) => (
-            <ReactionOption key={idx} {...feeling} path={path} />
+            <ReactionOptionWrapper key={idx} {...feeling} path={path} />
           ))}
         </div>
       </div>
