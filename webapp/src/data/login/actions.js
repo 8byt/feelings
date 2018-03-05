@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import api, { sendRequest } from '../../common/api';
 
 import { actions as postActions } from '../posts/actions';
@@ -28,7 +30,7 @@ export const actions = {
     error,
   }),
 
-  setCurrentUser: (payload, error) => ({
+  loadCurrentUser: (payload, error) => ({
     type: types.SET_CURRENT_USER,
     payload,
     error,
@@ -37,9 +39,9 @@ export const actions = {
   fetchCurrentUser: () => async dispatch => {
     try {
       const json = await sendRequest(api.GET_CURRENT_USER);
-      dispatch(actions.setCurrentUser(json));
+      dispatch(actions.loadCurrentUser(json));
     } catch (e) {
-      dispatch(actions.setCurrentUser(e, true));
+      dispatch(actions.loadCurrentUser(e, true));
     }
   },
 
@@ -64,5 +66,24 @@ export const actions = {
       console.log(e);
       dispatch(actions.completeLogin(e, true));
     }
-  }
+  },
+
+  checkUserSession: () => async dispatch => {
+    const tokenExpire = localStorage.getItem('expire');
+    if (tokenExpire && moment(tokenExpire).isAfter(moment())) {
+      dispatch(actions.fetchCurrentUser());
+      dispatch(feelingActions.fetchFeelings());
+      dispatch(postActions.fetchPosts());
+    } else {
+      localStorage.removeItem('expire');
+      localStorage.removeItem('token');
+    }
+  },
+
+  logOut: () => async dispatch => {
+    localStorage.removeItem('expire');
+    localStorage.removeItem('token');
+    dispatch(actions.loadCurrentUser({ currentUser: {} }));
+    dispatch(postActions.loadPosts({ posts: [], users: [] }));
+  },
 };

@@ -84,7 +84,16 @@ const FeelingWrapper = connect(
 )(Feeling);
 
 
-const FeelingGroup = ({ emoji }) => (<div>{emoji}</div>);
+const FeelingGroup = ({ emoji, posts }) => (
+  <div className='feeling-group'>
+    <div className='feeling-content'>
+      {emoji}
+    </div>
+    {posts.length > 1 ?
+      <div className='badge'>{posts.length}</div>
+      : null}
+  </div>
+);
 
 const FeelingGroupWrapper = connect(
   (state, { feelingId, path }) => ({

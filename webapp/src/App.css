@@ -1,7 +1,7 @@
 .App {
   text-align: center;
   color: #2e2e3a;
-  font-size: 26px;
+  font-size: 14px;
   display: flex;
 }
 
@@ -12,6 +12,7 @@
 }
 
 .feeling-post {
+  font-size: 26px;
   border: 1px solid silver;
   border-radius: 0.4em;
   padding: 0.2em;
@@ -23,7 +24,7 @@
 }
 
 .feeling-post-title {
-  font-size: 0.75em;
+  font-size: 20px;
   font-weight: bold;
 }
 
@@ -52,7 +53,7 @@
 }
 
 .feeling-count {
-  font-size: 0.6em;
+  font-size: 16px;
   margin: 0 0.1rem;
 }
 
@@ -69,7 +70,7 @@
 }
 
 .feeling-content.add {
-  font-size: 0.9em;
+  font-size: 24px;
   height: 38px;
   width: 38px;
   line-height: 22px;
@@ -101,7 +102,6 @@
 .feeling {
   position: relative;
   width: fit-content;
-  margin: 0.2em;
   text-align: center;
 }
 
@@ -121,7 +121,7 @@
   height: 38px;
   display: flex;
   align-items: center;
-  font-size: 1.1em;
+  font-size: 28px;
   border: 1px solid #6f7d8c;
   border-left: none;
   border-radius: 0 0.4em 0.4em 0;
@@ -154,17 +154,17 @@
 
 .badge {
   position: absolute;
-  bottom: -2px;
-  right: -4px;
-  font-size: 12px;
-  line-height: 14px;
+  bottom: 0px;
+  right: -2px;
+  font-size: 10px;
+  line-height: 12px;
   border: 1px solid #6f7d8c;
-  background-color: #6f7d8c;
-  color: white;
+  background-color: white;
+  color: #6f7d8c;
   font-weight: bold;
-  height: 16px;
-  width: 16px;
-  border-radius: 8px;
+  height: 14px;
+  width: 14px;
+  border-radius: 7px;
   cursor: default;
 }
 
@@ -182,6 +182,23 @@ input {
   width: 200px;
 }
 
-input, button {
-  font-size: 14px!important;
+.current-user-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 1em;
+}
+
+.current-user-panel button {
+  margin-top: 0.5em;
+}
+
+.reaction-description {
+  font-size: 16px;
+  font-style: italic;
+}
+
+.feeling-group {
+  position: relative;
+  margin: 0 4px;
 }

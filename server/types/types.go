@@ -35,4 +35,5 @@ type Post struct {
 	UserId    int64   `json:"userId"`
 	FeelingId int     `json:"feelingId"`
 	Children  []*Post `json:"children"`
+	TimeAdded 
 }
