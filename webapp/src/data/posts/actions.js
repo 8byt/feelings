@@ -1,6 +1,7 @@
 import api, { sendRequest } from '../../common/api';
 
 import { getPostId } from './selectors';
+import { getCurrentUserId } from '../login/selectors';
 
 export const types = {
   REQUEST_POSTS: 'REQUEST_POSTS',
@@ -46,8 +47,8 @@ export const actions = {
     try {
       const json = await sendRequest(api.ADD_POST, {
         feelingId,
-        parentId: getPostId(getState(), path),
-        userId: 1
+        parentId: path ? getPostId(getState(), path) : null,
+        userId: getCurrentUserId(getState()),
       });
       dispatch(actions.completePost(json));
       dispatch(actions.fetchPosts());

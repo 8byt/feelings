@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import toJS from './common/utils/toJS';
 
+import AddNewPost from './ui/AddNewPost';
 import FeelingFeed from './ui/FeelingFeed';
 import LoginWindow from './ui/LoginWindow';
 import CurrentUserPanel from './ui/CurrentUserPanel';
@@ -20,6 +21,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <AddNewPost />
         <FeelingFeed />
         {this.props.loggedIn ?
           <CurrentUserPanel />

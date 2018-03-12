@@ -3,6 +3,8 @@
   color: #2e2e3a;
   font-size: 14px;
   display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .feeling-feed {
@@ -201,4 +203,21 @@ input {
 .feeling-group {
   position: relative;
   margin: 0 4px;
+}
+
+.add-new-post {
+  display: flex;
+  flex-direction: column;
+  font-size: 20px;
+  margin: 1em;
+  align-items: center;
+}
+
+.new-post-options {
+  margin-top: 0.5em;
+  display: flex;
+}
+
+.new-post-options .feeling-content {
+  margin: 0.25em;
 }
