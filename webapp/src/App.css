@@ -7,6 +7,10 @@
   align-items: center;
 }
 
+.title {
+  font-size: 20px;
+}
+
 .feeling-feed {
   padding: 0.4em;
   width: fit-content;
@@ -14,15 +18,36 @@
 }
 
 .feeling-post {
+  position: relative;
   font-size: 26px;
   border: 1px solid silver;
-  border-radius: 0.4em;
-  padding: 0.2em;
-  width: 100%;
+  border-radius: 1em;
+  width: 2em;
+  height: 2em;
 }
 
 .feeling-post-content {
-  margin: 0.4em 0;
+  line-height: 2em;
+}
+
+.reactions {
+  position: absolute;
+  top: 0;
+  left: 2em;
+  padding: 5px;
+  min-width: 10em;
+  text-align: left;
+  border: 1px solid silver;
+  border-radius: 5px;
+}
+
+.reaction-level {
+  padding: 5px;
+}
+
+.reaction-level + .reaction-level {
+  margin-top: 5px;
+  border-top: 1px solid silver;
 }
 
 .feeling-post-title {
@@ -203,6 +228,11 @@ input {
 .feeling-group {
   position: relative;
   margin: 0 4px;
+  display: flex;
+}
+
+.feeling + .feeling {
+  margin-left: 8px;
 }
 
 .add-new-post {
@@ -220,4 +250,15 @@ input {
 
 .new-post-options .feeling-content {
   margin: 0.25em;
+}
+
+.path-marker {
+  position: absolute;
+  left: 14px;
+  padding-top: 2px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #6f7d8c;
 }

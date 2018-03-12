@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import moment from 'moment';
 
 import FeelingList from './FeelingList';
+
+import { getPosterName } from '../data/posts/selectors';
 
 class ReactionLevel extends Component {
   state = { minutesSince: 0 };
@@ -39,4 +42,6 @@ ReactionLevel.propTypes = {
   
 };
 
-export default ReactionLevel;
+export default connect(
+  (state, { path }) => ({ userName: getPosterName(state, path) }),
+)(ReactionLevel);

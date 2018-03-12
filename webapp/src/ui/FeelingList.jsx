@@ -1,142 +1,28 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
-import { Popup, Accordion, Icon } from 'semantic-ui-react';
 
 import toJS from '../common/utils/toJS';
 
 import AddReaction from './AddReaction';
+import FeelingGroup from './FeelingGroup';
 
-import { getEmoji } from '../data/feelings/selectors';
+import { getChildrenTypes } from '../data/posts/selectors';
 
-import {
-  getPostFeeling,
-  getPostEmoji,
-  getPosterName,
-  getNumReactions,
-  shouldShowFeeling,
-  shouldShowDuplicateCount,
-  getNumFeelingsOfType,
-  getChildrenTypes,
-  getChildrenOfType,
-} from '../data/posts/selectors';
-
-import { shouldShowReactions } from '../data/expanded/selectors';
-import { actions as expandedActions } from '../data/expanded/actions';
-
-function Feeling({
-  feelingId,
-  emoji,
-  userName,
-  path,
-  showFeeling,
-  showCount,
-  numOfType,
-  showReactions,
-  toggleReactions,
-  expandFeeling,
-  collapseFeeling,
-}) {
-  return (
-    <div
-      className={`feeling${!showFeeling ? ' hidden' : ''}`}
-      onMouseEnter={numOfType > 1 && (() => expandFeeling(feelingId))}
-      onMouseLeave={numOfType > 1 && (() => collapseFeeling(feelingId))}
-    >
-      <div
-        className={`feeling-content${showCount ? ' wide' : ''}`}
-        onClick={toggleReactions}
-      >
-        {emoji}
-        {showCount && <div className='feeling-count'>{numOfType}</div>}
-      </div>
-      <div className='badge'>⋯</div>
-      {/* userName */}
-      {showReactions && <FeelingListWrapper path={path} />}
+const FeelingList = ({ path, childrenTypes }) => (
+  <div className='feeling-list'>
+    {childrenTypes.map(feelingId => (
+      <FeelingGroup
+        key={feelingId}
+        feelingId={feelingId}
+        path={path}
+      />
+    ))}
+    <div className='feeling' style={{ marginLeft: 'auto' }}>
+      <AddReaction path={path} />
     </div>
-  );
-}
-
-Feeling.propTypes = {
-  
-};
-
-const { toggleReactions } = expandedActions;
-
-const mapStateToProps = (state, { path, expandedFeelings }) => ({
-  feelingId: getPostFeeling(state, path),
-  emoji: getPostEmoji(state, path),
-  userName: getPosterName(state, path),
-  showFeeling: shouldShowFeeling(state, path, expandedFeelings),
-  showCount: shouldShowDuplicateCount(state, path, expandedFeelings),
-  numOfType: getNumFeelingsOfType(state, path),
-  showReactions: shouldShowReactions(state, path),
-});
-
-const mapDispatchToProps = (dispatch, { path }) => ({
-  toggleReactions: () => dispatch(toggleReactions(path)),
-});
-
-const FeelingWrapper = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Feeling);
-
-
-const FeelingGroup = ({ emoji, posts }) => (
-  <div className='feeling-group'>
-    <div className='feeling-content'>
-      {emoji}
-    </div>
-    {posts.length > 1 ?
-      <div className='badge'>{posts.length}</div>
-      : null}
   </div>
 );
-
-const FeelingGroupWrapper = connect(
-  (state, { feelingId, path }) => ({
-    emoji: getEmoji(state, feelingId),
-    posts: getChildrenOfType(state, path, feelingId)
-  })
-)(toJS(FeelingGroup));
-
-
-class FeelingList extends Component {
-  state = { expandedFeelings: [] }
-
-  handleExpandFeeling = feelingId => {
-    this.setState({
-      expandedFeelings: _.concat(this.state.expandedFeelings, feelingId)
-    });
-  }
-
-  handleCollapseFeeling = feelingId => {
-    this.setState({
-      expandedFeelings: _.without(this.state.expandedFeelings, feelingId)
-    });
-  }
-
-  render() {
-    const { path, childrenTypes } = this.props;
-
-    return (
-      <div className='feeling-list'>
-        {childrenTypes.map(feelingId => (
-          <FeelingGroupWrapper
-            key={feelingId}
-            feelingId={feelingId}
-            path={path}
-          />
-        ))}
-        <div className='feeling' style={{ marginLeft: 'auto' }}>
-          <AddReaction path={path} />
-        </div>
-      </div>
-    );
-  }
-}
 
 const FeelingListWrapper = connect(
   (state, { path }) => ({
