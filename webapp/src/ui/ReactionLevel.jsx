@@ -5,13 +5,13 @@ import moment from 'moment';
 
 import FeelingList from './FeelingList';
 
-import { getPosterName } from '../data/posts/selectors';
+import { getPosterName, getPostTimeAdded } from '../data/posts/selectors';
 
 class ReactionLevel extends Component {
-  state = { minutesSince: 0 };
+  state = { timeAgo: '' };
 
   updateTime = () => {
-
+    this.setState({ timeAgo: moment(this.props.timeAdded).fromNow() });
   }
 
   componentDidMount() {
@@ -25,12 +25,12 @@ class ReactionLevel extends Component {
 
   render() {
     const { userName, path } = this.props;
-    const { minutesSince } = this.state;
+    const { timeAgo } = this.state;
 
     return (
       <div className='reaction-level'>
         <div className='reaction-description'>
-          {userName} {path.length > 1 ? 'reacted' : 'felt'} {minutesSince} minutes ago
+          {userName} {path.length > 1 ? 'reacted' : 'felt'} {timeAgo}
         </div>
         <FeelingList path={path} />
       </div>
@@ -43,5 +43,8 @@ ReactionLevel.propTypes = {
 };
 
 export default connect(
-  (state, { path }) => ({ userName: getPosterName(state, path) }),
+  (state, { path }) => ({
+    userName: getPosterName(state, path),
+    timeAdded: getPostTimeAdded(state, path),
+  }),
 )(ReactionLevel);

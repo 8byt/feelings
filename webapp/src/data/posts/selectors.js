@@ -28,6 +28,8 @@ export const getPostId = (state, path) => getPost(state, path).get('id');
 
 export const getPostFeeling = (state, path) => getPost(state, path).get('feelingId');
 
+export const getPostTimeAdded = (state, path) => getPost(state, path).get('timeAdded');
+
 export const getPosterName = (state, path) => getUserName(state, getPoster(state, path));
 
 export const getPostEmoji = (state, path) => getEmoji(state, getPostFeeling(state, path));

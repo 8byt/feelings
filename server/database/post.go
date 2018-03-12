@@ -28,11 +28,11 @@ func (e *Env) AddPost(req ReqAddPost) (int64, error) {
 
 func (e *Env) GetPosts(rootParentId sql.NullInt64) ([]*types.Post, error) {
 	recursivePostSql := `
-		WITH RECURSIVE nodes(post_id, user_id, feeling_id, parent_id) AS (
-			SELECT p1.post_id, p1.user_id, p1.feeling_id, p1.parent_id
+		WITH RECURSIVE nodes(post_id, user_id, feeling_id, parent_id, time_added) AS (
+			SELECT p1.post_id, p1.user_id, p1.feeling_id, p1.parent_id, EXTRACT(epoch FROM p1.time_added) * 1000
 			FROM post p1 WHERE parent_id IS NOT DISTINCT FROM $1
 			UNION
-			SELECT p2.post_id, p2.user_id, p2.feeling_id, p2.parent_id
+			SELECT p2.post_id, p2.user_id, p2.feeling_id, p2.parent_id, EXTRACT(epoch FROM p2.time_added) * 1000
 			FROM post p2, nodes s1 WHERE p2.parent_id = s1.post_id
 		)
 		SELECT * FROM nodes;`
@@ -61,7 +61,7 @@ func (e *Env) GetPosts(rootParentId sql.NullInt64) ([]*types.Post, error) {
 
 	for rows.Next() {
 		var dbPost types.DbPost
-		err = rows.Scan(&dbPost.PostId, &dbPost.UserId, &dbPost.FeelingId, &dbPost.ParentId)
+		err = rows.Scan(&dbPost.PostId, &dbPost.UserId, &dbPost.FeelingId, &dbPost.ParentId, &dbPost.TimeAdded)
 		if err != nil {
 			return []*types.Post{}, err
 		}
@@ -71,6 +71,7 @@ func (e *Env) GetPosts(rootParentId sql.NullInt64) ([]*types.Post, error) {
 			UserId:    dbPost.UserId,
 			FeelingId: dbPost.FeelingId,
 			Children:  []*types.Post{},
+			TimeAdded: dbPost.TimeAdded,
 		})
 	}
 
