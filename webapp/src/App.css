@@ -1,28 +1,264 @@
 .App {
   text-align: center;
+  color: #2e2e3a;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.title {
+  font-size: 20px;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.feeling-feed {
+  padding: 0.4em;
+  width: fit-content;
+  min-width: 30vw;
 }
 
-.App-title {
-  font-size: 1.5em;
+.feeling-post {
+  position: relative;
+  font-size: 26px;
+  border: 1px solid silver;
+  border-radius: 1em;
+  width: 2em;
+  height: 2em;
 }
 
-.App-intro {
-  font-size: large;
+.feeling-post-content {
+  line-height: 2em;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.reactions {
+  position: absolute;
+  top: 0;
+  left: 2em;
+  padding: 5px;
+  min-width: 10em;
+  text-align: left;
+  border: 1px solid silver;
+  border-radius: 5px;
+}
+
+.reaction-level {
+  padding: 5px;
+}
+
+.reaction-level + .reaction-level {
+  margin-top: 5px;
+  border-top: 1px solid silver;
+}
+
+.feeling-post-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.feeling-content {
+  font-weight: bold;
+  border: 1px solid #6f7d8c;
+  border-radius: 19px;
+  background-color: #efefef;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 6px 4px;
+  height: 38px;
+  width: 38px;
+  cursor: default;
+  transition: 0.2s background-color ease;
+  position: relative;
+}
+
+.feeling-content:hover {
+  background-color: #dedede;
+}
+
+.feeling-content.wide {
+  width: 2.0em;
+}
+
+.feeling-count {
+  font-size: 16px;
+  margin: 0 0.1rem;
+}
+
+.feeling-emoji {
+  position: absolute;
+  top: 7px;
+  height: 26px;
+  width: 26px;
+  line-height: 26px;
+}
+
+.feeling-content.wide .feeling-emoji {
+  position: initial;
+}
+
+.feeling-content.add {
+  font-size: 24px;
+  height: 38px;
+  width: 38px;
+  line-height: 22px;
+  padding: 8px;
+  z-index: 1;
+}
+
+.feeling-content, .feeling-post-content {
+  user-select: none;
+}
+
+.feeling-post + .feeling-post {
+  margin-top: 0.4em;
+}
+
+.feeling-list {
+  display: flex;
+  align-items: start;
+  /*justify-content: space-evenly;*/
+  margin-top: 0.2em;
+}
+
+.feeling-list.top-level {
+  margin-top: 0;
+  border: 1px solid silver;
+  border-radius: 0.4em;
+}
+
+.feeling {
+  position: relative;
+  width: fit-content;
+  text-align: center;
+}
+
+.feeling + .feeling {
+  margin-left: 0;
+}
+
+.feeling.hidden {
+  width: 0;
+  display: none;
+}
+
+.reaction-options {
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  font-size: 28px;
+  border: 1px solid #6f7d8c;
+  border-left: none;
+  border-radius: 0 0.4em 0.4em 0;
+  cursor: default;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.2s opacity ease, 0.2s visibility ease;
+  background-color: #dedede;
+  z-index: -2;
+}
+
+.reaction-option {
+  margin-left: calc(19px + 0.2em);
+  margin-right: 0.2em;
+  cursor: pointer;
+}
+
+.reaction-option:hover {
+  text-shadow: 0 0 2px #6f7d8c;
+}
+
+.reaction-option + .reaction-option {
+  margin-left: 0;
+}
+
+.reaction-options.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.badge {
+  position: absolute;
+  bottom: 0px;
+  right: -2px;
+  font-size: 10px;
+  line-height: 12px;
+  border: 1px solid #6f7d8c;
+  background-color: white;
+  color: #6f7d8c;
+  font-weight: bold;
+  height: 14px;
+  width: 14px;
+  border-radius: 7px;
+  cursor: default;
+}
+
+.login-window form {
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.submit-button {
+  margin-top: 1em;
+}
+
+input {
+  width: 200px;
+}
+
+.current-user-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 1em;
+}
+
+.current-user-panel button {
+  margin-top: 0.5em;
+}
+
+.reaction-description {
+  font-size: 16px;
+  font-style: italic;
+}
+
+.feeling-group {
+  position: relative;
+  margin: 0 4px;
+  display: flex;
+}
+
+.feeling + .feeling {
+  margin-left: 8px;
+}
+
+.add-new-post {
+  display: flex;
+  flex-direction: column;
+  font-size: 20px;
+  margin: 1em;
+  align-items: center;
+}
+
+.new-post-options {
+  margin-top: 0.5em;
+  display: flex;
+}
+
+.new-post-options .feeling-content {
+  margin: 0.25em;
+}
+
+.path-marker {
+  position: absolute;
+  left: 14px;
+  padding-top: 2px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #6f7d8c;
 }

@@ -25,7 +25,7 @@ CREATE TABLE friendship
 
 CREATE TABLE feeling
 (
-  feeling_id bigserial PRIMARY KEY,
+  feeling_id serial PRIMARY KEY,
   name text NOT NULL,
   glyph text NOT NULL
 );
@@ -34,7 +34,7 @@ CREATE TABLE post
 (
   post_id bigserial PRIMARY KEY,
   user_id bigint NOT NULL REFERENCES "user" (user_id),
-  feeling_id bigint NOT NULL REFERENCES feeling (feeling_id),
+  feeling_id int NOT NULL REFERENCES feeling (feeling_id),
   parent_id bigint REFERENCES post (post_id),
   time_added timestamp with time zone DEFAULT now()
 );

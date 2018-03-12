@@ -20,6 +20,20 @@ func (e *Env) GetUserByEmail(userEmail string) (*types.User, error) {
 	return &user, nil
 }
 
+func (e *Env) GetUserById(userId int64) (*types.User, error) {
+	var user types.User
+	err := e.Db.QueryRow(
+		`SELECT user_id, name, email, CAST(EXTRACT(EPOCH FROM time_joined) AS bigint) * 1000
+			FROM "user" WHERE "user_id" = $1`,
+		userId,
+	).Scan(&user.Id, &user.Name, &user.Email, &user.TimeJoined)
+	if err != nil {
+		return &types.User{}, err
+	}
+
+	return &user, nil
+}
+
 func (e *Env) CheckAuthentication(userEmail string) (int64, bool) {
 	user, err := e.GetUserByEmail(userEmail)
 	if err != nil {

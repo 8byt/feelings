@@ -1,0 +1,67 @@
+import { Map, List } from 'immutable';
+import _ from 'lodash';
+import { createSelector } from 'reselect';
+
+import { getEmoji } from '../feelings/selectors';
+import { getUserName } from '../users/selectors';
+
+const getKeyPath = path => [].concat(...path.map(e => ['children', e])).slice(1);
+
+export const getPosts = state => state.get('posts');
+
+export const getPost = (state, path) => getPosts(state).getIn(getKeyPath(path), Map());
+
+export const getReactions = (state, path) => getPost(state, path).get('children', List());
+
+export const getNumReactions = (state, path) => getReactions(state, path).size;
+
+export const isFirstOfType = (state, path) => {
+  const feelingId = getPostFeeling(state, path);
+  const siblings = getReactions(state, path.slice(0, -1));
+  const firstIndex = siblings.findIndex(post => post.get('feelingId') === feelingId);
+  return firstIndex === path[path.length - 1];
+};
+
+export const getPoster = (state, path) => getPost(state, path).get('userId');
+
+export const getPostId = (state, path) => getPost(state, path).get('id');
+
+export const getPostFeeling = (state, path) => getPost(state, path).get('feelingId');
+
+export const getPosterName = (state, path) => getUserName(state, getPoster(state, path));
+
+export const getPostEmoji = (state, path) => getEmoji(state, getPostFeeling(state, path));
+
+export const shouldShowFeeling = (state, path, expandedFeelings) => {
+  const firstOfType = isFirstOfType(state, path);
+  const expanded = _.includes(expandedFeelings, getPostFeeling(state, path));
+  return firstOfType || expanded;
+};
+
+export const getNumFeelingsOfType = (state, path) => {
+  const feelingId = getPostFeeling(state, path);
+  const siblings = getReactions(state, path.slice(0, -1));
+  return siblings.filter(post => post.get('feelingId') === feelingId).size;
+};
+
+export const getChildrenTypes = (state, path) => {
+  return getReactions(state, path)
+    .map(post => post.get('feelingId'))
+    .toSet()
+    .toList()
+    .sort();
+}
+
+export const getChildrenOfType = (state, path, feelingId) => {
+  return getReactions(state, path)
+    .map((post, index) => post.set('index', index))
+    .filter(post => post.get('feelingId') === feelingId)
+    .map(post => post.get('index'));
+};
+
+export const shouldShowDuplicateCount = (state, path, expandedFeelings) => {
+  const firstOfType = isFirstOfType(state, path);
+  const expanded = _.includes(expandedFeelings, getPostFeeling(state, path));
+  const numOfType = getNumFeelingsOfType(state, path);
+  return firstOfType && numOfType > 1 && !expanded;
+};
