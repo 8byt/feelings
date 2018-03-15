@@ -1,0 +1,25 @@
+version: '3.2'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./sql/dev/create_db.sql:/docker-entrypoint-initdb.d/0_create_db.sql
+      - ./sql/dev/create_schema.sql:/docker-entrypoint-initdb.d/1_create_schema.sql
+      - ./sql/dev/feelings.sql:/docker-entrypoint-initdb.d/2_feelings.sql
+      - ./sql/dev/variables.sql:/variables.sql
+      - ./data:/var/lib/postgresql/data
+  api:
+    build: server
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    command: ["./wait-for-db.sh", "db", "server"]
+  web:
+    build: webapp
+    ports:
+      - "80:9000"
+    depends_on:
+      - api

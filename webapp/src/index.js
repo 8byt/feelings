@@ -8,8 +8,8 @@ import configureStore from './configureStore';
 import routes from './routes';
 import registerServiceWorker from './registerServiceWorker';
 
-import './index.css';
 import 'semantic-ui-css/semantic.min.css';
+import './index.css';
 
 const history = createHistory();
 
@@ -23,4 +23,5 @@ render(
   </Provider>,
   document.getElementById('root')
 );
-registerServiceWorker();
+
+//registerServiceWorker();

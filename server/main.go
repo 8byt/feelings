@@ -38,7 +38,7 @@ func main() {
 	apiGroup := r.Group("/api")
 	apiGroup.Use(auth.MiddlewareFunc())
 	{
-		apiGroup.GET("current-user", apiEnv.HandleGetCurrentUser)
+		apiGroup.GET("/current-user", apiEnv.HandleGetCurrentUser)
 
 		apiGroup.GET("/feed", apiEnv.HandleGetFeed)
 
