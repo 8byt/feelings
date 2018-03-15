@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 
 import toJS from './common/utils/toJS';
 
-import AddNewPost from './ui/AddNewPost';
-import FeelingFeed from './ui/FeelingFeed';
-import LoginWindow from './ui/LoginWindow';
-import CurrentUserPanel from './ui/CurrentUserPanel';
+import MainPage from './ui/MainPage';
+import LoginPage from './ui/LoginPage';
 
 import { getCurrentUserName } from './data/login/selectors';
 import { actions as loginActions } from './data/login/actions';
@@ -21,11 +19,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <AddNewPost />
-        <FeelingFeed />
         {this.props.loggedIn ?
-          <CurrentUserPanel />
-          : <LoginWindow />
+          <MainPage />
+          : <LoginPage />
         }
       </div>
     );

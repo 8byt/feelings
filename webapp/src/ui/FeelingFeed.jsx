@@ -9,7 +9,7 @@ import { getPosts } from '../data/posts/selectors';
 
 const FeelingFeed = ({ posts }) => (
   <div className='feeling-feed'>
-    <div className='title'>Feed</div>
+    <div className='title'>Your Feed</div>
     {_.range(posts.size).map(index => <FeelingPost key={index} path={[index]} />)}
   </div>
 );

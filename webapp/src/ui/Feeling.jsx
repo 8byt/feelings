@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 import toJS from '../common/utils/toJS';
 
+import { getPosterName, getPostTimeAdded } from '../data/posts/selectors';
 import { isOnPath } from '../data/expanded/selectors';
 import { actions as expandedActions } from '../data/expanded/actions';
 
-function Feeling({ emoji, toggleReactions, badge, onPath }) {
+function Feeling({ emoji, toggleReactions, badge, onPath, userName, timeAdded }) {
+  const tooltip = userName ? `${userName}, ${moment(timeAdded).calendar()}` : undefined;
   return (
-    <div className='feeling'>
+    <div className='feeling' title={tooltip}>
       <div className='feeling-content' onClick={!badge ? toggleReactions : () => {}}>
         {emoji}
       </div>
@@ -26,7 +29,11 @@ Feeling.propTypes = {
 const { toggleReactions } = expandedActions;
 
 export default connect(
-  (state, { path }) => ({ onPath: path && isOnPath(state, path) }),
+  (state, { path }) => ({
+    onPath: path && isOnPath(state, path),
+    userName: path && getPosterName(state, path),
+    timeAdded: path && getPostTimeAdded(state, path),
+  }),
   (dispatch, { path }) => ({
     toggleReactions: () => dispatch(toggleReactions(path)),
   })

@@ -68,6 +68,30 @@ export const actions = {
     }
   },
 
+  submitNewAccount: () => async (dispatch, getState) => {
+    const username = getLoginField(getState(), 'username');
+    const password = getLoginField(getState(), 'password');
+    const firstName = getLoginField(getState(), 'firstName');
+    const lastName = getLoginField(getState(), 'lastName');
+
+    try {
+      const json = await sendRequest(api.CREATE_ACCOUNT, {
+        email: username,
+        password,
+        name: `${firstName} ${lastName}`,
+      }, false);
+      console.log(json);
+      if (json.code === 200) {
+        dispatch(actions.submitLogin());
+        dispatch(actions.editLoginField('firstName', ''));
+        dispatch(actions.editLoginField('lastName', ''));
+      }
+    } catch (e) {
+      console.log(e);
+      dispatch(actions.completeLogin(e, true));
+    }
+  },
+
   checkUserSession: () => async dispatch => {
     const tokenExpire = localStorage.getItem('expire');
     if (tokenExpire && moment(tokenExpire).isAfter(moment())) {

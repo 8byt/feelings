@@ -42,12 +42,12 @@ func (e *Env) CheckAuthentication(userEmail string) (int64, bool) {
 	return user.Id, true
 }
 
-func (e *Env) AddUser(name string, email string) (int64, error) {
+func (e *Env) AddUser(user types.NewUser) (int64, error) {
 	var userId int64 = 0
 	err := e.Db.QueryRow(
 		`INSERT INTO "user"("name", "email") VALUES ($1, $2) RETURNING "user_id"`,
-		name,
-		email,
+		user.Name,
+		user.Email,
 	).Scan(&userId)
 
 	return userId, err

@@ -9,6 +9,11 @@ type MiniUser struct {
 	Name   string `json:"name"`
 }
 
+type NewUser struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
 type User struct {
 	Id         int64       `json:"id"`
 	Email      string      `json:"email"`

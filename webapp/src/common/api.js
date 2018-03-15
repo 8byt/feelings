@@ -2,6 +2,7 @@ const BASE_URL = '';
 
 const endpoints = {
   LOGIN: ['/login', 'POST'],
+  CREATE_ACCOUNT: ['/user', 'POST'],
   GET_CURRENT_USER: ['/api/current-user', 'GET'],
   GET_FEELINGS: ['/api/feelings', 'GET'],
   GET_POSTS: ['/api/feed', 'GET'],

@@ -9,7 +9,7 @@ import { actions as postActions } from '../data/posts/actions';
 const AddNewPost = ({ feelings, onPost }) => {
   return (
     <div className='add-new-post'>
-      <div className='new-post-title'>How do you feel?</div>
+      <div className='title'>How do you feel?</div>
       <div className='new-post-options'>
         {feelings.map(({ id, glyph }) => (
           <div key={id} className='feeling-content' onClick={() => onPost(id)}>{glyph}</div>
