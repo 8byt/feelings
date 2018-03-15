@@ -43,7 +43,7 @@ class LoginPage extends Component {
             </div>
             : null
           }
-          <h5>Username</h5>
+          <h5>Username (Email)</h5>
           <input type='text' value={username} onChange={onChangeUsername} />
           <h5>Password</h5>
           <input type='password' value={password} onChange={onChangePassword} />
