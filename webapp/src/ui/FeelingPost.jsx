@@ -15,6 +15,7 @@ const FeelingPost = ({ path, content, expandedPath, handleClick }) => (
     <div className='feeling-post-content' onClick={handleClick}>{content}</div>
       {expandedPath.length && expandedPath[0] === path[0] ?
         <div className='reactions'>
+          <div className='reactions-marker' />
           {expandedPath.map((_, idx, arr) => (
             <ReactionLevel path={arr.slice(0, idx + 1)} key={idx} />
           ))}
