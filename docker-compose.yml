@@ -1,0 +1,21 @@
+version: '3.2'
+
+services:
+  db:
+    image: wolf/feel-db
+    build: sql
+  api:
+    image: wolf/feel-api
+    build: server
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    command: ["./wait-for-db.sh", "db", "server"]
+  web:
+    image: wolf/feel-web
+    build: webapp
+    ports:
+      - "80:9000"
+    depends_on:
+      - api
