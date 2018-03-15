@@ -261,6 +261,10 @@
   display: flex;
 }
 
+.feeling-group:nth-last-child(2) {
+  margin-right: 8px;
+}
+
 .feeling + .feeling {
   margin-left: 8px;
 }
