@@ -19,6 +19,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <div className='main-title'>feelings.cloud</div>
         {this.props.loggedIn ?
           <MainPage />
           : <LoginPage />

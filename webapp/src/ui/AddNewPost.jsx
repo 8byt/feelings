@@ -11,8 +11,15 @@ const AddNewPost = ({ feelings, onPost }) => {
     <div className='add-new-post'>
       <div className='title'>How do you feel?</div>
       <div className='new-post-options'>
-        {feelings.map(({ id, glyph }) => (
-          <div key={id} className='feeling-content' onClick={() => onPost(id)}>{glyph}</div>
+        {feelings.map(({ id, glyph, name }) => (
+          <div
+            key={id}
+            className='feeling-content'
+            onClick={() => onPost(id)}
+            title={name}
+          >
+            {glyph}
+          </div>
         ))}
       </div>
     </div>

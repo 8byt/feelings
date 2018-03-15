@@ -4,8 +4,18 @@
   font-size: 14px;
   display: flex;
   flex-direction: column;
-  align-items: left;
+  align-items: center;
   padding: 1em;
+}
+
+.main-title {
+  margin: auto;
+  font-size: 50px;
+  margin: 10px auto;
+  padding: 10px;
+  line-height: 50px;
+  border: 5px dotted silver;
+  border-radius: 20px;
 }
 
 .title {
@@ -13,6 +23,7 @@
 }
 
 .feeling-feed {
+  align-self: left;
   padding: 0.4em;
   width: fit-content;
   min-width: 30vw;
