@@ -273,6 +273,7 @@ button {
   background-color: #efefef;
   transition-duration: 0.2s;
   padding: 4px 8px;
+  outline: none;
 }
 
 button:hover {
