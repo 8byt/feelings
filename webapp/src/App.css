@@ -259,6 +259,26 @@
   justify-content: space-between;
 }
 
+input[type="text"], input[type="password"] {
+  border: 1px solid #6f7d8c;
+  border-radius: 2px;
+  width: 100%;
+}
+
+button {
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid #6f7d8c;
+  border-radius: 4px;
+  background-color: #efefef;
+  transition-duration: 0.2s;
+  padding: 4px 8px;
+}
+
+button:hover {
+  background-color: lightgrey;
+}
+
 .submit-button {
   margin-top: 1em;
 }
