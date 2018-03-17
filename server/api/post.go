@@ -5,12 +5,29 @@ import (
 	"feelings/server/util"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 func (e *ApiEnv) HandleAddPost(c *gin.Context) {
 	var addPostReq database.ReqAddPost
 	if err := c.ShouldBind(&addPostReq); err != nil {
 		util.SendError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	latestPost, err := e.DbEnv.GetLatestPost(addPostReq.UserId)
+	now := time.Now()
+	then := time.Unix(int64(latestPost.TimeAdded), 0)
+
+	if latestPost.FeelingId == addPostReq.FeelingId && then.After(now.Add(time.Hour * -1)) {
+		_, err := e.DbEnv.IncrementPostCount(latestPost.PostId)
+		if err != nil {
+			util.SendError(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"post_id": latestPost.PostId,
+		})
 		return
 	}
 

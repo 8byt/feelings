@@ -34,6 +34,7 @@ type DbPost struct {
 	FeelingId int
 	ParentId  sql.NullInt64
 	TimeAdded float64
+	Count     sql.NullInt64
 }
 
 type Post struct {
@@ -42,4 +43,5 @@ type Post struct {
 	FeelingId int     `json:"feelingId"`
 	Children  []*Post `json:"children"`
 	TimeAdded float64 `json:"timeAdded"`
+	Count	  int64   `json:"count"`
 }

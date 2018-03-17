@@ -34,6 +34,8 @@ export const getPosterName = (state, path) => getUserName(state, getPoster(state
 
 export const getPostEmoji = (state, path) => getEmoji(state, getPostFeeling(state, path));
 
+export const getNumChildren = (state, path) => getPost(state, path).get('children').size;
+
 export const shouldShowFeeling = (state, path, expandedFeelings) => {
   const firstOfType = isFirstOfType(state, path);
   const expanded = _.includes(expandedFeelings, getPostFeeling(state, path));

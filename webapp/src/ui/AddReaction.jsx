@@ -6,8 +6,8 @@ import toJS from '../common/utils/toJS';
 import { getFeelings } from '../data/feelings/selectors';
 import { actions } from '../data/posts/actions';
 
-const ReactionOption = ({ id, glyph, postReaction }) => (
-  <div className='reaction-option' onClick={postReaction}>{glyph}</div>
+const ReactionOption = ({ id, glyph, name, postReaction }) => (
+  <div className='reaction-option' title={name} onClick={postReaction}>{glyph}</div>
 );
 
 const ReactionOptionWrapper = connect(
