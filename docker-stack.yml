@@ -4,10 +4,12 @@ api:
     - db
   ports:
     - '8080:8080'
-  roles:
-    - global
 db:
   image: 'wolf/feel-db:latest'
+db-migrator:
+  image: 'wolf/feel-db-migrator:latest'
+  links:
+    - db
 web:
   image: 'wolf/feel-web:latest'
   links:

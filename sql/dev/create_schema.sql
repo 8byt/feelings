@@ -36,6 +36,5 @@ CREATE TABLE post
   user_id bigint NOT NULL REFERENCES "user" (user_id),
   feeling_id int NOT NULL REFERENCES feeling (feeling_id),
   parent_id bigint REFERENCES post (post_id),
-  time_added timestamp with time zone DEFAULT now(),
-  count int
+  time_added timestamp with time zone DEFAULT now()
 );

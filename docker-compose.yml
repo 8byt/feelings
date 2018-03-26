@@ -19,3 +19,8 @@ services:
       - "80:9000"
     depends_on:
       - api
+  migrator:
+    image: wolf/feel-db-migrator
+    build: db-migration
+    depends_on:
+      - db
