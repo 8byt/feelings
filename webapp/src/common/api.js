@@ -8,6 +8,7 @@ const endpoints = {
   GET_POSTS: ['/api/feed', 'GET'],
   GET_FRIENDS: ['/api/friends', 'POST'],
   ADD_POST: ['/api/post', 'POST'],
+  FEEDBACK: ['/api/feedback', 'POST'],
 };
 
 export default Object.entries(endpoints).reduce((all, [name, [path, method]]) => ({

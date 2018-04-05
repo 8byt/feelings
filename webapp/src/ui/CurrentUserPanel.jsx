@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import toJS from '../common/utils/toJS';
 
+import FeedbackButton from './FeedbackButton';
+
 import { getCurrentUserName } from '../data/login/selectors';
 import { actions as loginActions } from '../data/login/actions';
 
@@ -12,6 +14,7 @@ const CurrentUserPanel = ({ name, onLogOut }) => (
     <div className='current-user-panel'>
       <div>Logged in as {name}</div>
       <button onClick={onLogOut}>Log Out</button>
+      <FeedbackButton />
     </div>
     : <div className='current-user-panel'>Logged out</div>
 );

@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Set } from 'immutable';
 
 import toJS from '../common/utils/toJS';
 
 import { getFeelings } from '../data/feelings/selectors';
+import { getPreviousReactions } from '../data/posts/selectors';
 import { actions } from '../data/posts/actions';
 
 const ReactionOption = ({ id, glyph, name, postReaction }) => (
@@ -48,5 +50,12 @@ class AddReaction extends Component {
 }
 
 export default connect(
-  state => ({ feelings: getFeelings(state) }),
+  (state, { path }) => {
+    const previous = getPreviousReactions(state, path);
+    return {
+      feelings: getFeelings(state).filter(
+        feeling => !previous.has(feeling.get('id'))
+      ),
+    };
+  },
 )(toJS(AddReaction));

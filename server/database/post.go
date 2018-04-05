@@ -30,6 +30,17 @@ func (e *Env) AddPost(req ReqAddPost) (int64, error) {
 	return postId, err
 }
 
+func (e *Env) CheckDuplicateReaction(feelingId int, parentId int64) (bool, error) {
+	var dupeExists bool = false
+	checkDupeSql := `
+		SELECT EXISTS(
+			SELECT 1 FROM "post" WHERE feeling_id = $1 AND parent_id = $2
+		)`
+	err := e.Db.QueryRow(checkDupeSql, feelingId, parentId).Scan(&dupeExists)
+
+	return dupeExists, err
+}
+
 func (e *Env) GetLatestPost(userId int64) (*types.DbPost, error) {
 	var latestPost types.DbPost
 	getPostSql := `
@@ -61,7 +72,7 @@ func (e *Env) GetPosts(rootParentId sql.NullInt64) ([]*types.Post, error) {
 			SELECT p2.post_id, p2.user_id, p2.feeling_id, p2.parent_id, EXTRACT(epoch FROM p2.time_added) * 1000, p2.count
 			FROM post p2, nodes s1 WHERE p2.parent_id = s1.post_id
 		)
-		SELECT * FROM nodes;`
+		SELECT * FROM nodes ORDER BY time_added;`
 	rows, err := e.Db.Query(
 		recursivePostSql,
 		rootParentId,

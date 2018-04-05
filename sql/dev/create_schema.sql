@@ -39,3 +39,11 @@ CREATE TABLE post
   time_added timestamp with time zone DEFAULT now(),
   count int
 );
+
+CREATE TABLE feedback
+(
+  feedback_id bigserial PRIMARY KEY,
+  user_id bigint NOT NULL REFERENCES "user" (user_id),
+  "content" text,
+  time_added timestamp with time zone DEFAULT now()
+);
