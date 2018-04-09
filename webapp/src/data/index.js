@@ -7,6 +7,7 @@ import feelings from './feelings/reducer';
 import users from './users/reducer';
 import posts from './posts/reducer';
 import expanded from './expanded/reducer';
+import feedback from './feedback/reducer';
 
 export const rootReducer = combineReducers({
   login,
@@ -14,5 +15,6 @@ export const rootReducer = combineReducers({
   users,
   posts,
   expanded,
+  feedback,
   router: routerReducer,
 });

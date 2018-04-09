@@ -1,9 +1,10 @@
-import { Map, List } from 'immutable';
+import { Map, List, Set } from 'immutable';
 import _ from 'lodash';
 import { createSelector } from 'reselect';
 
 import { getEmoji } from '../feelings/selectors';
 import { getUserName } from '../users/selectors';
+import { getCurrentUserId } from '../login/selectors';
 
 const getKeyPath = path => [].concat(...path.map(e => ['children', e])).slice(1);
 
@@ -54,7 +55,7 @@ export const getChildrenTypes = (state, path) => {
     .toSet()
     .toList()
     .sort();
-}
+};
 
 export const getChildrenOfType = (state, path, feelingId) => {
   return getReactions(state, path)
@@ -68,4 +69,16 @@ export const shouldShowDuplicateCount = (state, path, expandedFeelings) => {
   const expanded = _.includes(expandedFeelings, getPostFeeling(state, path));
   const numOfType = getNumFeelingsOfType(state, path);
   return firstOfType && numOfType > 1 && !expanded;
+};
+
+export const getPreviousReactions = (state, path) => {
+  const userId = getCurrentUserId(state);
+  const reactions = getReactions(state, path);
+  const previous = reactions.reduce((all, post) => {
+    if (post.get('userId') === userId) {
+      return all.add(post.get('feelingId'));
+    }
+    return all;
+  }, Set());
+  return previous;
 };

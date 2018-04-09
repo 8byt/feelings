@@ -50,6 +50,8 @@ func main() {
 		apiGroup.POST("/post", apiEnv.HandleAddPost)
 
 		apiGroup.GET("/feelings", apiEnv.HandleGetFeelings)
+
+		apiGroup.POST("/feedback", apiEnv.HandleAddFeedback)
 	}
 
 	r.Run() // listen and serve on 0.0.0.0:8080

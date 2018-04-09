@@ -15,6 +15,11 @@ func (e *ApiEnv) HandleAddPost(c *gin.Context) {
 		return
 	}
 
+	dupeExists, err := e.DbEnv.CheckDuplicateReaction(addPostReq.FeelingId, addPostReq.ParentId)
+	if dupeExists {
+		c.Status(http.StatusNoContent)
+	}
+
 	latestPost, err := e.DbEnv.GetLatestPost(addPostReq.UserId)
 	now := time.Now()
 	then := time.Unix(int64(latestPost.TimeAdded), 0)

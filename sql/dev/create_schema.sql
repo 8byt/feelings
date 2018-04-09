@@ -38,3 +38,11 @@ CREATE TABLE post
   parent_id bigint REFERENCES post (post_id),
   time_added timestamp with time zone DEFAULT now()
 );
+
+CREATE TABLE feedback
+(
+  feedback_id bigserial PRIMARY KEY,
+  user_id bigint NOT NULL REFERENCES "user" (user_id),
+  "content" text,
+  time_added timestamp with time zone DEFAULT now()
+);
