@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import createEmoji from '../common/utils/createEmoji';
 import toJS from '../common/utils/toJS';
 
 import { getFeelings } from '../data/feelings/selectors';
@@ -18,7 +19,7 @@ const AddNewPost = ({ feelings, onPost }) => {
             onClick={() => onPost(id)}
             title={name}
           >
-            {glyph}
+            {createEmoji(glyph)}
           </div>
         ))}
       </div>
