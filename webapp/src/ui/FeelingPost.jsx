@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import _ from 'lodash';
 
+import createEmoji from '../common/utils/createEmoji';
 import toJS from '../common/utils/toJS';
 
 import ReactionLevel from './ReactionLevel';
@@ -38,7 +39,9 @@ function FeelingPost({
 
   return (
     <div className='feeling-post' style={{ fontSize: `${size}px` }}>
-      <div className='feeling-post-content' title={tooltip} onClick={handleClick}>{content}</div>
+      <div className='feeling-post-content' title={tooltip} onClick={handleClick}>
+        {createEmoji(content)}
+      </div>
       {numChildren && !expanded ?
         <div className='badge large' style={{ bottom: badgePos, right: badgePos - 2 }}>
           {numChildren}
