@@ -1,0 +1,18 @@
+api:
+  image: 'wolf/feel-api:latest'
+  links:
+    - db
+  ports:
+    - '8080:8080'
+db:
+  image: 'wolf/feel-db:latest'
+db-migrator:
+  image: 'wolf/feel-db-migrator:latest'
+  links:
+    - db
+web:
+  image: 'wolf/feel-web:latest'
+  links:
+    - api
+  ports:
+    - '80:9000'
