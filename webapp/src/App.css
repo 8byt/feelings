@@ -431,10 +431,6 @@ button:hover {
     padding: 0;
   }
 
-  .reactions {
-    
-  }
-
   .feeling-feed {
     margin-bottom: 5rem;
   }
@@ -450,6 +446,7 @@ button:hover {
     height: 5rem;
     background-color: white;
     border-top: 1px solid silver;
+    z-index: 2;
   }
 
   .user-buttons {
@@ -464,6 +461,7 @@ button:hover {
 
   .add-new-post {
     width: 100%;
+    max-width: 450px;
   }
 
   .new-post-options {
@@ -473,5 +471,18 @@ button:hover {
 
   .new-post-options .feeling-content {
     margin: 0;
+  }
+}
+
+@media screen and (max-width: 890px) {
+  .reactions {
+    top: calc(100% + 9px);
+    left: -163px!important;
+  }
+
+  .reactions-marker {
+    transform: rotate(90deg);
+    top: -11px!important;
+    left: calc(50% - 9px);
   }
 }

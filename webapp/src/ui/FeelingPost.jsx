@@ -33,7 +33,7 @@ function FeelingPost({
   const emojiLeft = 200 - (size * 3 / 4);
   const markerTop = (size * 3 / 4) - 6;
   const reactionsLeft = size * 3 / 2 + 11;
-  const badgePos = (count - 1) / 3 * 2 - 3;
+  const badgePos = _.clamp(count - 1, 8) / 3 * 2 - 3;
 
   const expanded = expandedPath.length && expandedPath[0] === path[0];
 
