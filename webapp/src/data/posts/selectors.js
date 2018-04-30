@@ -82,3 +82,7 @@ export const getPreviousReactions = (state, path) => {
   }, Set());
   return previous;
 };
+
+export const postedByCurrentUser = (state, path) => (
+  getPoster(state, path) === getCurrentUserId(state)
+);

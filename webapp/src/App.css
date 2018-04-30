@@ -28,29 +28,49 @@
 .feeling-feed {
   align-self: left;
   padding: 0.4em;
-  width: fit-content;
+  width: 100%;
   min-width: 30vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .feeling-feed .title {
   text-align: left;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .feeling-post {
   position: relative;
-  font-size: 36px;
-  border: 1px solid silver;
-  border-radius: 0.75em;
-  width: 1.5em;
-  height: 1.5em;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+}
+
+.feeling-post-name {
+  position: absolute;
+  width: 200px;
+  font-size: 14px;
+  font-style: italic;
+  text-align: right;
+}
+
+.feeling-post-date {
+  position: absolute;
+  font-size: 14px;
+  font-style: italic;
+  width: 200px;
+  text-align: left;
 }
 
 .feeling-post-content {
-  height: 100%;
+  width: 1.5em;
+  height: 1.5em;
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 1px solid silver;
+  border-radius: 0.75em;
 }
 
 .feeling-post-content img {
@@ -88,11 +108,6 @@
 
 .reaction-level {
   padding: 5px;
-}
-
-.reaction-level + .reaction-level {
-  margin-top: 5px;
-  border-top: 1px solid silver;
 }
 
 .feeling-post-title {
@@ -155,7 +170,7 @@
 }
 
 .feeling-post + .feeling-post {
-  margin-top: 0.4em;
+  margin-top: 15px;
 }
 
 .feeling-list {
@@ -190,14 +205,14 @@
   position: absolute;
   float: left;
   top: -1px;
-  left: 50%;
+  right: 50%;
   height: 38px;
   display: flex;
   align-items: center;
   font-size: 28px;
   border: 1px solid #6f7d8c;
-  border-left: none;
-  border-radius: 0 0.4em 0.4em 0;
+  border-right: none;
+  border-radius: 0.4em 0 0 0.4em;
   cursor: default;
   visibility: hidden;
   opacity: 0;
@@ -207,17 +222,17 @@
 }
 
 .reaction-option {
-  margin-left: calc(19px + 0.2em);
-  margin-right: 0.2em;
+  margin-right: 0;
+  margin-left: 0.2em;
   cursor: pointer;
 }
 
 .reaction-option:hover {
-  text-shadow: 0 0 2px #6f7d8c;
+  text-shadow: 0 0 3px #6f7d8c;
 }
 
-.reaction-option + .reaction-option {
-  margin-left: 0;
+.reaction-option:last-child {
+  margin-right: calc(19px + 0.2em);
 }
 
 .reaction-options.visible {
@@ -309,8 +324,10 @@ button:hover {
 }
 
 .reaction-description {
-  font-size: 16px;
+  font-size: 14px;
   font-style: italic;
+  border-bottom: 1px solid silver;
+  margin-bottom: 5px;
 }
 
 .feeling-group {
@@ -346,7 +363,7 @@ button:hover {
 .path-marker {
   position: absolute;
   left: 14px;
-  padding-top: 2px;
+  padding-top: 3px;
   width: 0;
   height: 0;
   border-left: 5px solid transparent;
@@ -379,4 +396,82 @@ button:hover {
   width: 300px;
   height: 54px;
   outline: none;
+}
+
+.delete-post {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  font-weight: bold;
+  font-size: 10px;
+  line-height: 13px;
+  height: 14px;
+  width: 14px;
+  border: 1px solid #6f7d8c;
+  border-radius: 7px;
+  background-color: red;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s background-color ease;
+  display: none;
+}
+
+.feeling-content:hover > .delete-post {
+  display: block;
+}
+
+.delete-post:hover {
+  background-color: darkred;
+}
+
+@media screen and (max-width: 768px) {
+  .App {
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+  }
+
+  .reactions {
+    
+  }
+
+  .feeling-feed {
+    margin-bottom: 5rem;
+  }
+
+  .current-user-panel {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    top: initial;
+    width: 100vw;
+    padding-top: 0.5em;
+    margin: 0;
+    height: 5rem;
+    background-color: white;
+    border-top: 1px solid silver;
+  }
+
+  .user-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .feedback-button-container {
+    margin-left: 1em;
+  }
+
+  .add-new-post {
+    width: 100%;
+  }
+
+  .new-post-options {
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .new-post-options .feeling-content {
+    margin: 0;
+  }
 }
