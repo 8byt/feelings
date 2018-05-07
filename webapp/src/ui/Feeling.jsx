@@ -24,7 +24,7 @@ function Feeling({
     <div className='feeling' title={tooltip}>
       <div className='feeling-content' onClick={!badge ? toggleReactions : () => {}}>
         {createEmoji(glyph)}
-        {isCurrentUser ? <div className='delete-post'>✕</div> : null}
+        {/*isCurrentUser ? <div className='delete-post'>✕</div> : null*/}
       </div>
       {badge ? <div className='badge'>{badge}</div> : null}
       {onPath ? <div className='path-marker' /> : null}
