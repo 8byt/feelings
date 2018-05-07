@@ -12,7 +12,7 @@ import { getPosts } from '../data/posts/selectors';
 
 const FeelingFeed = ({ posts }) => (
   <div className='feeling-feed'>
-    <div className='title'>Your Feed</div>
+    <div className='title'>How everyone feels</div>
     {_.reverse(posts.map(({ count }, index) => (
       <FeelingPost key={index} path={[index]} count={count} />
     )))}

@@ -22,9 +22,9 @@ func (e *ApiEnv) HandleAddPost(c *gin.Context) {
 
 	latestPost, err := e.DbEnv.GetLatestPost(addPostReq.UserId)
 	now := time.Now()
-	then := time.Unix(int64(latestPost.TimeAdded), 0)
+	then := time.Unix(int64(latestPost.TimeAdded / 1000), int64(latestPost.TimeAdded) % 1000 * 1e6)
 
-	if latestPost.FeelingId == addPostReq.FeelingId && then.After(now.Add(time.Hour * -1)) {
+	if latestPost.FeelingId == addPostReq.FeelingId && now.Before(then.Add(time.Hour)) && addPostReq.ParentId == 0 {
 		_, err := e.DbEnv.IncrementPostCount(latestPost.PostId)
 		if err != nil {
 			util.SendError(c, http.StatusInternalServerError, err.Error())
