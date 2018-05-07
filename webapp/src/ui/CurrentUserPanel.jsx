@@ -12,9 +12,11 @@ import { actions as loginActions } from '../data/login/actions';
 const CurrentUserPanel = ({ name, onLogOut }) => (
   name ?
     <div className='current-user-panel'>
-      <div>Logged in as {name}</div>
-      <button onClick={onLogOut}>Log Out</button>
-      <FeedbackButton />
+        <div>Logged in as {name}</div>
+      <div className='user-buttons'>
+        <button onClick={onLogOut}>Log Out</button>
+        <FeedbackButton />
+      </div>
     </div>
     : <div className='current-user-panel'>Logged out</div>
 );

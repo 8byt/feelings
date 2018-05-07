@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import _ from 'lodash';
 
+import createEmoji from '../common/utils/createEmoji';
 import toJS from '../common/utils/toJS';
 
 import ReactionLevel from './ReactionLevel';
@@ -27,23 +28,35 @@ function FeelingPost({
   count,
   numChildren,
 }) {
-  const tooltip = `${userName}, ${moment(timeAdded).calendar()}`;
-
   const size = _.clamp(26 + 3 * (count - 1), 50);
-  const markerTop = size - 7;
-  const reactionsLeft = size * 2 + 9;
-  const badgePos = (count - 1) / 2;
+  const nameRight = size * 3 / 2 + 10;
+  const emojiLeft = 200 - (size * 3 / 4);
+  const markerTop = (size * 3 / 4) - 6;
+  const reactionsLeft = size * 3 / 2 + 11;
+  const badgePos = _.clamp(count - 1, 8) / 3 * 2 - 3;
 
   const expanded = expandedPath.length && expandedPath[0] === path[0];
 
   return (
-    <div className='feeling-post' style={{ fontSize: `${size}px` }}>
-      <div className='feeling-post-content' title={tooltip} onClick={handleClick}>{content}</div>
-      {numChildren && !expanded ?
-        <div className='badge large' style={{ bottom: badgePos, right: badgePos - 2 }}>
-          {numChildren}
-        </div>
-        : null}
+    <div className='feeling-post'>
+      <div
+        className='feeling-post-content'
+        style={{ fontSize: `${size}px` }}
+        onClick={handleClick}
+      >
+        {!expanded && <Fragment>
+          <div className='feeling-post-name' style={{ right: nameRight }}>{userName}</div>
+          <div className='feeling-post-date' style={{ left: nameRight }}>
+            {moment(timeAdded).calendar()}
+          </div>
+        </Fragment>}
+        {createEmoji(content)}
+        {numChildren && !expanded ?
+          <div className='badge large' style={{ bottom: badgePos, right: badgePos - 2 }}>
+            {numChildren}
+          </div>
+          : null}
+      </div>
         {expanded ?
           <div className='reactions' style={{ left: `${reactionsLeft}px` }}>
             <div className='reactions-marker' style={{ top: `${markerTop}px` }}/>
